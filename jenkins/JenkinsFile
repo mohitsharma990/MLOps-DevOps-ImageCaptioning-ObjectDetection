@@ -58,7 +58,10 @@ pipeline {
                 script {
                     echo "Building frontend Docker image: ${FRONTEND_IMAGE_NAME}:${IMAGE_TAG}"
                     dir('frontend') {
-                        sh "docker build -t ${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} -f Dockerfile ."
+                        sh """
+                            docker build -t ${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} -f Dockerfile .
+                            docker tag ${FRONTEND_IMAGE_NAME}:${IMAGE_TAG} ${FRONTEND_IMAGE_NAME}:latest
+                        """
                     }
                 }
             }
@@ -69,7 +72,10 @@ pipeline {
                 script {
                     echo "Building caption Docker image: ${CAPTION_IMAGE_NAME}:${IMAGE_TAG}"
                     dir('caption') {
-                        sh "docker build -t ${CAPTION_IMAGE_NAME}:${IMAGE_TAG} -f Dockerfile ."
+                        sh """
+                            docker build -t ${CAPTION_IMAGE_NAME}:${IMAGE_TAG} -f Dockerfile .
+                            docker tag ${CAPTION_IMAGE_NAME}:${IMAGE_TAG} ${CAPTION_IMAGE_NAME}:latest
+                        """
                     }
                 }
             }
@@ -80,7 +86,10 @@ pipeline {
                 script {
                     echo "Building object detection Docker image: ${OBJECT_IMAGE_NAME}:${IMAGE_TAG}"
                     dir('object') {
-                        sh "docker build -t ${OBJECT_IMAGE_NAME}:${IMAGE_TAG} -f Dockerfile ."
+                        sh """
+                            docker build -t ${OBJECT_IMAGE_NAME}:${IMAGE_TAG} -f Dockerfile .
+                            docker tag ${OBJECT_IMAGE_NAME}:${IMAGE_TAG} ${OBJECT_IMAGE_NAME}:latest
+                        """
                     }
                 }
             }
@@ -108,12 +117,8 @@ pipeline {
         stage('Setup Kubernetes') {
             steps {
                 script {
-                    // Set KUBECONFIG environment variable to use Docker Desktop's config
                     sh '''
-                        # Set KUBECONFIG to use Docker Desktop's config
                         export KUBECONFIG="$HOME/.kube/config"
-                        
-                        # Verify kubectl can access the cluster
                         kubectl config use-context docker-desktop
                         kubectl cluster-info
                     '''
@@ -125,7 +130,6 @@ pipeline {
             steps {
                 script {
                     echo "Deploying to Kubernetes namespace: ${K8S_NAMESPACE}"
-                    
                     try {
                         // 1. Create namespace if it doesn't exist
                         sh "kubectl apply -f kubernetes/namespace.yaml"
@@ -177,19 +181,18 @@ pipeline {
         success {
             echo 'Pipeline succeeded!'
             emailext (
-                subject: "Pipeline Successful: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                subject: "✅ Pipeline Successful: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
                 body: """
-                    Pipeline ${env.JOB_NAME} build #${env.BUILD_NUMBER} was successful!
-                    
-                    Build URL: ${env.BUILD_URL}
-                    Workspace: ${env.WORKSPACE}
-                    
-                    Deployed Images:
+                    ✅ Pipeline *${env.JOB_NAME}* build *#${env.BUILD_NUMBER}* succeeded!
+
+                    🔗 *Build URL:* ${env.BUILD_URL}
+
+                    📦 *Deployed Images:*
                     - Frontend: ${FRONTEND_IMAGE_NAME}:${IMAGE_TAG}
                     - Caption: ${CAPTION_IMAGE_NAME}:${IMAGE_TAG}
                     - Object Detection: ${OBJECT_IMAGE_NAME}:${IMAGE_TAG}
-                    
-                    Kubernetes Namespace: ${K8S_NAMESPACE}
+
+                    ☸️ *Namespace:* ${K8S_NAMESPACE}
                 """,
                 to: "${EMAIL_RECIPIENTS}"
             )
@@ -197,14 +200,13 @@ pipeline {
         failure {
             echo 'Pipeline failed!'
             emailext (
-                subject: "Pipeline Failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                subject: "❌ Pipeline Failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
                 body: """
-                    Pipeline ${env.JOB_NAME} build #${env.BUILD_NUMBER} failed!
-                    
-                    Build URL: ${env.BUILD_URL}
-                    Workspace: ${env.WORKSPACE}
-                    
-                    Please check the Jenkins console output for more details.
+                    ❌ Pipeline *${env.JOB_NAME}* build *#${env.BUILD_NUMBER}* failed!
+
+                    🔗 *Build URL:* ${env.BUILD_URL}
+
+                    Please check the Jenkins logs for details.
                 """,
                 to: "${EMAIL_RECIPIENTS}"
             )
