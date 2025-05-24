@@ -141,11 +141,11 @@ spec:
           mountPath: /model-cache # Mount the *entire* volume here
         resources:
           requests:
-            memory: "1Gi"
+            memory: "2Gi"
             cpu: "500m"
             # nvidia.com/gpu: "1" # Uncomment if using GPUs
           limits:
-            memory: "2Gi"
+            memory: "4Gi"
             cpu: "1000m" # Adjust based on load testing
             # nvidia.com/gpu: "1" # Uncomment if using GPUs
         # --- RECOMMENDED: Configure Health Checks ---

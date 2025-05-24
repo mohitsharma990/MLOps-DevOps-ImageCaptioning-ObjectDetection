@@ -88,12 +88,12 @@ spec:
           mountPath: /model-cache
         resources:
           requests:
-            memory: "1.5Gi"
-            cpu: "500m"
+            memory: "512Mi"
+            cpu: "300m"
             # nvidia.com/gpu: 1
           limits:
-            memory: "3Gi"
-            cpu: "1000m"
+            memory: "1Gi"
+            cpu: "500m"
             # nvidia.com/gpu: 1
       #   # --- RECOMMENDED: Configure Health Checks ---
       #   livenessProbe:
