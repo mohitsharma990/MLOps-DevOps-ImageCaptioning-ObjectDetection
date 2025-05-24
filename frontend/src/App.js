@@ -645,7 +645,7 @@ function App() {
         {/* --- Hero Section --- */}
         <Hero>
           <h1>
-            <FiImage aria-hidden="true" /> AI Tools
+            <FiImage aria-hidden="true" /> AI Vision Tools
           </h1>
           <p>
             Upload an image to generate descriptive captions or detect objects
