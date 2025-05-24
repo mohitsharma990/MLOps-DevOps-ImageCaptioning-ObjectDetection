@@ -22,9 +22,6 @@ pipeline {
     // }
 
     environment {
-        // Ensure Jenkins can find Docker
-        PATH = "/opt/homebrew/bin:${env.PATH}"
-
         // --- Configuration ---
         DOCKER_REGISTRY = 'docker.io'
         DOCKER_USERNAME = 'iitgmohitsharma'
@@ -39,6 +36,9 @@ pipeline {
 
         // Use build number for image tags
         IMAGE_TAG = "build-${BUILD_NUMBER}"
+
+        // Docker config override
+        DOCKER_CONFIG = '/tmp/.docker'
 
         // Email configuration
         EMAIL_RECIPIENTS = 'googloid111@gmail.com'
@@ -62,11 +62,10 @@ pipeline {
         stage('Docker Login') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, 
-                                                    usernameVariable: 'DOCKER_USER', 
+                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID,
+                                                    usernameVariable: 'DOCKER_USER',
                                                     passwordVariable: 'DOCKER_PASS')]) {
                         sh '''
-                            export DOCKER_CONFIG=/tmp/.docker
                             mkdir -p $DOCKER_CONFIG
                             echo '{
                             "auths": {
