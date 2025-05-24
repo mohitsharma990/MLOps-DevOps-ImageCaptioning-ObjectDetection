@@ -4,8 +4,8 @@ pipeline {
     environment {
         // --- Configuration ---
         DOCKER_REGISTRY = 'docker.io'
-        DOCKER_USERNAME = 'parvg'
-        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
+        DOCKER_USERNAME = 'iitgmohitsharma'
+        DOCKER_CREDENTIALS_ID = 'DockerHubCred'
         KUBECONFIG_CREDENTIALS_ID = 'kube-config'
         K8S_NAMESPACE = 'spe-project'
         
@@ -18,7 +18,7 @@ pipeline {
         IMAGE_TAG = "build-${BUILD_NUMBER}"
         
         // Email configuration
-        EMAIL_RECIPIENTS = 'googloid111@gmail.com'
+        EMAIL_RECIPIENTS = 'iitgmohitsharma@gmail.com'
     }
 
     options {
@@ -108,7 +108,7 @@ pipeline {
                     // Set KUBECONFIG environment variable to use Docker Desktop's config
                     sh '''
                         # Set KUBECONFIG to use Docker Desktop's config
-                        export KUBECONFIG="$USERPROFILE/.kube/config"
+                        export KUBECONFIG="$HOME/.kube/config"
                         
                         # Verify kubectl can access the cluster
                         kubectl config use-context docker-desktop
