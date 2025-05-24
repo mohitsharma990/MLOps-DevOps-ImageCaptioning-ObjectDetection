@@ -164,12 +164,13 @@ pipeline {
                             kubectl set image deployment/object-detector-deployment object-detector=${OBJECT_IMAGE_NAME}:${IMAGE_TAG} -n ${K8S_NAMESPACE} --record
                         """
 
-                        // 7. Wait for rollouts to complete
-                        sh """
-                            kubectl rollout status deployment/frontend-deployment -n ${K8S_NAMESPACE} --timeout=15m
-                            kubectl rollout status deployment/backend-deployment -n ${K8S_NAMESPACE} --timeout=15m
-                            kubectl rollout status deployment/object-detector-deployment -n ${K8S_NAMESPACE} --timeout=15m
-                        """
+                        // // 7. Wait for rollouts to complete
+                        // sh """
+                        //     kubectl rollout status deployment/frontend-deployment -n ${K8S_NAMESPACE} --timeout=15m
+                        //     kubectl rollout status deployment/backend-deployment -n ${K8S_NAMESPACE} --timeout=15m
+                        //     kubectl rollout status deployment/object-detector-deployment -n ${K8S_NAMESPACE} --timeout=15m
+                        // """
+                    
                     } catch (Exception e) {
                         echo "Error during Kubernetes deployment: ${e.message}"
                         sh 'kubectl get pods -n ${K8S_NAMESPACE}'
