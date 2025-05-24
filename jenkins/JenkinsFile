@@ -43,7 +43,7 @@ pipeline {
                                                     usernameVariable: 'DOCKER_USER', 
                                                     passwordVariable: 'DOCKER_PASS')]) {
                         sh """
-                            echo \$DOCKER_PASS | docker login ${DOCKER_REGISTRY} -u \$DOCKER_USER --password-stdin
+                            echo \$DOCKER_PASS | /opt/homebrew/bin/docker login ${DOCKER_REGISTRY} -u \$DOCKER_USER --password-stdin
                         """
                     }
                 }
