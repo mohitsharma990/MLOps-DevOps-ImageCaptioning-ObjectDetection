@@ -65,18 +65,17 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, 
                                                     usernameVariable: 'DOCKER_USER', 
                                                     passwordVariable: 'DOCKER_PASS')]) {
-                        // sh """
-                        //     echo \$DOCKER_PASS | /opt/homebrew/bin/docker login ${DOCKER_REGISTRY} -u \$DOCKER_USER --password-stdin
-                        // """
-
-                        // sh """
-                        //     echo $DOCKER_PASS | /opt/homebrew/bin/docker login --username $DOCKER_USER --password-stdin ${DOCKER_REGISTRY} --config /tmp/.docker
-                        // """
-
                         sh '''
                             export DOCKER_CONFIG=/tmp/.docker
                             mkdir -p $DOCKER_CONFIG
-                            echo $DOCKER_PASS | /opt/homebrew/bin/docker login --username $DOCKER_USER --password-stdin $DOCKER_REGISTRY
+                            echo '{
+                            "auths": {
+                                "https://index.docker.io/v1/": {
+                                "auth": "'$(echo -n "$DOCKER_USER:$DOCKER_PASS" | base64)'"
+                                }
+                            },
+                            "credsStore": ""
+                            }' > $DOCKER_CONFIG/config.json
                         '''
                     }
                 }
