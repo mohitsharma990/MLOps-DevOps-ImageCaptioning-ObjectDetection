@@ -1,22 +1,45 @@
 pipeline {
     agent any
 
+    // environment {
+    //     // --- Configuration ---
+    //     DOCKER_REGISTRY = 'docker.io'
+    //     DOCKER_USERNAME = 'iitgmohitsharma'
+    //     DOCKER_CREDENTIALS_ID = 'DockerHubCred'
+    //     KUBECONFIG_CREDENTIALS_ID = 'kube-config'
+    //     K8S_NAMESPACE = 'spe-project'
+        
+    //     // Image names
+    //     FRONTEND_IMAGE_NAME = "${DOCKER_USERNAME}/spefrontend"
+    //     CAPTION_IMAGE_NAME = "${DOCKER_USERNAME}/caption"
+    //     OBJECT_IMAGE_NAME = "${DOCKER_USERNAME}/object"
+        
+    //     // Use build number for image tags
+    //     IMAGE_TAG = "build-${BUILD_NUMBER}"
+        
+    //     // Email configuration
+    //     EMAIL_RECIPIENTS = 'googloid111@gmail.com'
+    // }
+
     environment {
+        // Ensure Jenkins can find Docker
+        PATH = "/opt/homebrew/bin:${env.PATH}"
+
         // --- Configuration ---
         DOCKER_REGISTRY = 'docker.io'
         DOCKER_USERNAME = 'iitgmohitsharma'
         DOCKER_CREDENTIALS_ID = 'DockerHubCred'
         KUBECONFIG_CREDENTIALS_ID = 'kube-config'
         K8S_NAMESPACE = 'spe-project'
-        
+
         // Image names
         FRONTEND_IMAGE_NAME = "${DOCKER_USERNAME}/spefrontend"
         CAPTION_IMAGE_NAME = "${DOCKER_USERNAME}/caption"
         OBJECT_IMAGE_NAME = "${DOCKER_USERNAME}/object"
-        
+
         // Use build number for image tags
         IMAGE_TAG = "build-${BUILD_NUMBER}"
-        
+
         // Email configuration
         EMAIL_RECIPIENTS = 'googloid111@gmail.com'
     }
