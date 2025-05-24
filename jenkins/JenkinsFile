@@ -1,45 +1,22 @@
 pipeline {
     agent any
 
-    // environment {
-    //     // --- Configuration ---
-    //     DOCKER_REGISTRY = 'docker.io'
-    //     DOCKER_USERNAME = 'iitgmohitsharma'
-    //     DOCKER_CREDENTIALS_ID = 'DockerHubCred'
-    //     KUBECONFIG_CREDENTIALS_ID = 'kube-config'
-    //     K8S_NAMESPACE = 'spe-project'
-        
-    //     // Image names
-    //     FRONTEND_IMAGE_NAME = "${DOCKER_USERNAME}/spefrontend"
-    //     CAPTION_IMAGE_NAME = "${DOCKER_USERNAME}/caption"
-    //     OBJECT_IMAGE_NAME = "${DOCKER_USERNAME}/object"
-        
-    //     // Use build number for image tags
-    //     IMAGE_TAG = "build-${BUILD_NUMBER}"
-        
-    //     // Email configuration
-    //     EMAIL_RECIPIENTS = 'googloid111@gmail.com'
-    // }
-
     environment {
         // --- Configuration ---
         DOCKER_REGISTRY = 'docker.io'
-        DOCKER_USERNAME = 'iitgmohitsharma'
-        DOCKER_CREDENTIALS_ID = 'DockerHubCred'
+        DOCKER_USERNAME = 'parvg'
+        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
         KUBECONFIG_CREDENTIALS_ID = 'kube-config'
         K8S_NAMESPACE = 'spe-project'
-
+        
         // Image names
         FRONTEND_IMAGE_NAME = "${DOCKER_USERNAME}/spefrontend"
         CAPTION_IMAGE_NAME = "${DOCKER_USERNAME}/caption"
         OBJECT_IMAGE_NAME = "${DOCKER_USERNAME}/object"
-
+        
         // Use build number for image tags
         IMAGE_TAG = "build-${BUILD_NUMBER}"
-
-        // Docker config override
-        DOCKER_CONFIG = '/tmp/.docker'
-
+        
         // Email configuration
         EMAIL_RECIPIENTS = 'googloid111@gmail.com'
     }
@@ -62,19 +39,11 @@ pipeline {
         stage('Docker Login') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID,
-                                                    usernameVariable: 'DOCKER_USER',
+                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, 
+                                                    usernameVariable: 'DOCKER_USER', 
                                                     passwordVariable: 'DOCKER_PASS')]) {
                         sh '''
-                            mkdir -p $DOCKER_CONFIG
-                            echo '{
-                            "auths": {
-                                "https://index.docker.io/v1/": {
-                                "auth": "'$(echo -n "$DOCKER_USER:$DOCKER_PASS" | base64)'"
-                                }
-                            },
-                            "credsStore": ""
-                            }' > $DOCKER_CONFIG/config.json
+                            echo $DOCKER_PASS | docker login ${DOCKER_REGISTRY} -u $DOCKER_USER --password-stdin
                         '''
                     }
                 }
