@@ -2,6 +2,9 @@ pipeline {
     agent any
 
     environment {
+        // --- PATH fix ---
+        PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+
         // --- Configuration ---
         DOCKER_REGISTRY = 'docker.io'
         DOCKER_USERNAME = 'iitgmohitsharma'
