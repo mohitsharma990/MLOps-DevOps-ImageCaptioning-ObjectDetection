@@ -114,6 +114,9 @@ pipeline {
             }
         }
 
+
+        
+
         stage('Setup Kubernetes') {
             steps {
                 script {
@@ -158,9 +161,9 @@ pipeline {
 
                         // 7. Wait for rollouts to complete
                         sh """
-                            kubectl rollout status deployment/frontend-deployment -n ${K8S_NAMESPACE} --timeout=5m
-                            kubectl rollout status deployment/backend-deployment -n ${K8S_NAMESPACE} --timeout=5m
-                            kubectl rollout status deployment/object-detector-deployment -n ${K8S_NAMESPACE} --timeout=5m
+                            kubectl rollout status deployment/frontend-deployment -n ${K8S_NAMESPACE}
+                            kubectl rollout status deployment/backend-deployment -n ${K8S_NAMESPACE}
+                            kubectl rollout status deployment/object-detector-deployment -n ${K8S_NAMESPACE}
                         """
                     } catch (Exception e) {
                         echo "Error during Kubernetes deployment: ${e.message}"
