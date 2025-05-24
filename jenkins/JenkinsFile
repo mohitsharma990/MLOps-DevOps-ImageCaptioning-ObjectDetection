@@ -144,6 +144,11 @@ pipeline {
                         sh "kubectl apply -f kubernetes/frontend-service.yaml"
                         sh "kubectl apply -f kubernetes/backend-service.yaml"
                         sh "kubectl apply -f kubernetes/object-detector-service.yaml"
+                        
+                        // 3.2 Apply deployments 
+                        sh "kubectl apply -f kubernetes/frontend-deployment.yaml"
+                        sh "kubectl apply -f kubernetes/backend-deployment.yaml"
+                        sh "kubectl apply -f kubernetes/object-detector-deployment.yaml"
 
                         // 4. Apply ingress
                         sh "kubectl apply -f kubernetes/ingress.yaml"
@@ -161,9 +166,9 @@ pipeline {
 
                         // 7. Wait for rollouts to complete
                         sh """
-                            kubectl rollout status deployment/frontend-deployment -n ${K8S_NAMESPACE}
-                            kubectl rollout status deployment/backend-deployment -n ${K8S_NAMESPACE}
-                            kubectl rollout status deployment/object-detector-deployment -n ${K8S_NAMESPACE}
+                            kubectl rollout status deployment/frontend-deployment -n ${K8S_NAMESPACE} --timeout=15m
+                            kubectl rollout status deployment/backend-deployment -n ${K8S_NAMESPACE} --timeout=15m
+                            kubectl rollout status deployment/object-detector-deployment -n ${K8S_NAMESPACE} --timeout=15m
                         """
                     } catch (Exception e) {
                         echo "Error during Kubernetes deployment: ${e.message}"
